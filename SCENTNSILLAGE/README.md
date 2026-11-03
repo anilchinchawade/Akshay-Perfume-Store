@@ -51,3 +51,7 @@ The local catalogue is demonstration data. In Phase 6, replace `frontend/src/fea
 - `http://localhost:5173/shop`
 - `http://localhost:5173/product/amber-oud`
 - `http://localhost:5173/find-your-scent`
+
+
+## Phase 4
+See [PHASE-4-README.md](./PHASE-4-README.md) for cart, wishlist, checkout, and Razorpay setup.

@@ -1,4 +1,5 @@
 import { X, ShoppingBag, Trash2 } from "lucide-react";
+import { Link } from "react-router-dom";
 import { useAppDispatch, useAppSelector } from "@/store/hooks";
 import { removeItem, setCartOpen } from "@/store/slices/cartSlice";
 import { Button } from "@/components/common/Button";
@@ -65,7 +66,8 @@ export function MiniCart() {
               <span>Subtotal</span><strong>{currency.format(subtotal)}</strong>
             </div>
             <p className="mb-4 text-xs text-muted">Shipping and taxes are calculated at checkout.</p>
-            <Button className="w-full" onClick={() => dispatch(setCartOpen(false))}>Continue to checkout</Button>
+            <Link to="/cart" onClick={() => dispatch(setCartOpen(false))} className="mb-3 block"><Button className="w-full" variant="secondary">View shopping bag</Button></Link>
+            <Link to="/checkout" onClick={() => dispatch(setCartOpen(false))} className="block"><Button className="w-full">Continue to checkout</Button></Link>
           </div>
         )}
       </aside>

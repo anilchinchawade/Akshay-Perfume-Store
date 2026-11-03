@@ -2,6 +2,7 @@ import express from "express";
 import cors from "cors";
 import helmet from "helmet";
 import { healthRouter } from "./routes/health.js";
+import { paymentsRouter } from "./routes/payments.js";
 import { env } from "./config/env.js";
 
 export const app = express();
@@ -24,6 +25,7 @@ app.get("/api/v1", (_req, res) => {
 });
 
 app.use("/api/v1/health", healthRouter);
+app.use("/api/v1/payments", paymentsRouter);
 
 app.use((_req, res) => {
   res.status(404).json({

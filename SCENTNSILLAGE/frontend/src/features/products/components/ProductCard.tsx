@@ -2,8 +2,9 @@ import { Link } from "react-router-dom";
 import { Heart, Star } from "lucide-react";
 import type { Product } from "@/features/products/types/product.types";
 import { Button } from "@/components/common/Button";
-import { useAppDispatch } from "@/store/hooks";
+import { useAppDispatch, useAppSelector } from "@/store/hooks";
 import { addItem } from "@/store/slices/cartSlice";
+import { toggleWishlist } from "@/store/slices/wishlistSlice";
 
 const money = new Intl.NumberFormat("en-IN", { style: "currency", currency: "INR", maximumFractionDigits: 0 });
 
@@ -11,15 +12,21 @@ export function ProductCard({ product, view = "grid" }: { product: Product; view
   const dispatch = useAppDispatch();
   const variant = product.variants.find(item => item.stock > 0) ?? product.variants[0];
   const image = product.images[0]?.url ?? "";
-  const add = () => dispatch(addItem({ id: `${product.id}-${variant.id}`, name: product.name, size: `${variant.size} ml`, price: variant.price, quantity: 1, image }));
+  const isSaved = useAppSelector(state => state.wishlist.items.some(item => item.productId === product.id));
+  const add = () => dispatch(addItem({ id: `${product.id}-${variant.id}`, productId: product.id, slug: product.slug, name: product.name, size: `${variant.size} ml`, price: variant.price, quantity: 1, image, stock: variant.stock }));
+  const save = () => dispatch(toggleWishlist({ productId: product.id, slug: product.slug, name: product.name, brand: product.brand, price: variant.price, image }));
 
   return (
     <article className={view === "list" ? "grid grid-cols-[112px_1fr] gap-4 border-b border-ink/10 py-5 sm:grid-cols-[180px_1fr] sm:gap-7" : "group"}>
-      <Link to={`/product/${product.slug}`} className="relative block aspect-[4/5] overflow-hidden bg-[#eee8df]">
-        <img src={image} alt={product.images[0]?.alt ?? product.name} loading="lazy" className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105" />
-        {(product.isNew || product.isBestseller || product.isDiscoverySet) && <span className="absolute left-3 top-3 bg-ivory px-2 py-1 text-[9px] font-semibold uppercase tracking-wider">{product.isDiscoverySet ? "Discovery set" : product.isNew ? "New" : "Bestseller"}</span>}
-        <span className="absolute right-3 top-3 flex h-9 w-9 items-center justify-center rounded-full bg-ivory/90" aria-hidden="true"><Heart size={16}/></span>
-      </Link>
+      <div className="relative">
+        <Link to={`/product/${product.slug}`} className="block aspect-[4/5] overflow-hidden bg-[#eee8df]">
+          <img src={image} alt={product.images[0]?.alt ?? product.name} loading="lazy" className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105" />
+          {(product.isNew || product.isBestseller || product.isDiscoverySet) && <span className="absolute left-3 top-3 bg-ivory px-2 py-1 text-[9px] font-semibold uppercase tracking-wider">{product.isDiscoverySet ? "Discovery set" : product.isNew ? "New" : "Bestseller"}</span>}
+        </Link>
+        <button type="button" onClick={save} aria-label={isSaved ? `Remove ${product.name} from wishlist` : `Save ${product.name} to wishlist`} aria-pressed={isSaved} className="absolute right-3 top-3 flex h-9 w-9 items-center justify-center rounded-full bg-ivory/90">
+          <Heart size={16} className={isSaved ? "fill-gold text-gold" : ""}/>
+        </button>
+      </div>
       <div className={view === "grid" ? "pt-4" : "flex flex-col justify-center"}>
         <p className="text-[10px] uppercase tracking-[0.16em] text-muted">{product.brand}</p>
         <Link to={`/product/${product.slug}`} className="mt-1 block font-display text-xl hover:text-gold sm:text-2xl">{product.name}</Link>

@@ -1,5 +1,5 @@
 import { Link, NavLink } from "react-router-dom";
-import { Menu, Search, ShoppingBag, UserRound } from "lucide-react";
+import { Menu, Search, ShoppingBag, UserRound, Heart } from "lucide-react";
 import { Container } from "@/components/common/Container";
 import { useAppDispatch, useAppSelector } from "@/store/hooks";
 import { setCartOpen } from "@/store/slices/cartSlice";
@@ -13,6 +13,7 @@ const navItems = [
 
 export function Header() {
   const dispatch = useAppDispatch();
+  const wishlistCount = useAppSelector(state => state.wishlist.items.length);
   const itemCount = useAppSelector((state) =>
     state.cart.items.reduce((sum, item) => sum + item.quantity, 0)
   );
