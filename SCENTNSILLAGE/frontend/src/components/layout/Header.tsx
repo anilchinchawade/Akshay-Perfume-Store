@@ -14,6 +14,7 @@ const navItems = [
 export function Header() {
   const dispatch = useAppDispatch();
   const wishlistCount = useAppSelector(state => state.wishlist.items.length);
+  const customer = useAppSelector(state => state.auth.user);
   const itemCount = useAppSelector((state) =>
     state.cart.items.reduce((sum, item) => sum + item.quantity, 0)
   );
@@ -48,9 +49,9 @@ export function Header() {
               <button className="icon-button hidden sm:inline-flex" aria-label="Search">
                 <Search size={19} />
               </button>
-              <button className="icon-button hidden sm:inline-flex" aria-label="Account">
+              <Link to={customer ? "/account" : "/login"} className="icon-button hidden sm:inline-flex" aria-label={customer ? "My account" : "Sign in"}>
                 <UserRound size={19} />
-              </button>
+              </Link>
               <button
                 className="icon-button relative"
                 aria-label={`Shopping bag with ${itemCount} items`}

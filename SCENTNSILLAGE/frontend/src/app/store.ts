@@ -2,9 +2,10 @@ import { configureStore } from "@reduxjs/toolkit";
 import cartReducer, { CART_STORAGE_KEY } from "@/store/slices/cartSlice";
 import wishlistReducer from "@/store/slices/wishlistSlice";
 import uiReducer from "@/store/slices/uiSlice";
+import authReducer from "@/store/slices/authSlice";
 
 export const store = configureStore({
-  reducer: { cart: cartReducer, wishlist: wishlistReducer, ui: uiReducer }
+  reducer: { cart: cartReducer, wishlist: wishlistReducer, ui: uiReducer, auth: authReducer }
 });
 
 store.subscribe(() => {

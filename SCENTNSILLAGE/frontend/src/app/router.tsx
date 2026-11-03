@@ -12,6 +12,12 @@ const CartPage = lazy(() => import("@/features/cart/pages/CartPage").then(module
 const WishlistPage = lazy(() => import("@/features/wishlist/pages/WishlistPage").then(module => ({ default: module.WishlistPage })));
 const CheckoutPage = lazy(() => import("@/features/checkout/pages/CheckoutPage").then(module => ({ default: module.CheckoutPage })));
 const OrderConfirmationPage = lazy(() => import("@/features/checkout/pages/OrderConfirmationPage").then(module => ({ default: module.OrderConfirmationPage })));
+const LoginPage = lazy(() => import("@/features/auth/pages/LoginPage").then(module => ({ default: module.LoginPage })));
+const RegisterPage = lazy(() => import("@/features/auth/pages/RegisterPage").then(module => ({ default: module.RegisterPage })));
+const AccountPage = lazy(() => import("@/features/account/pages/AccountPage").then(module => ({ default: module.AccountPage })));
+const OrdersPage = lazy(() => import("@/features/account/pages/OrdersPage").then(module => ({ default: module.OrdersPage })));
+const MyReviewsPage = lazy(() => import("@/features/reviews/pages/MyReviewsPage").then(module => ({ default: module.MyReviewsPage })));
+import { ProtectedRoute } from "@/features/auth/components/ProtectedRoute";
 
 function RouteLoader() {
   return <div className="mx-auto min-h-[50vh] max-w-6xl animate-pulse px-6 py-20"><div className="h-8 w-1/3 bg-beige"/><div className="mt-6 h-64 bg-beige"/></div>;
@@ -31,6 +37,11 @@ export const router = createBrowserRouter([
       { path: "/wishlist", element: <Suspense fallback={<RouteLoader />}><WishlistPage /></Suspense> },
       { path: "/checkout", element: <Suspense fallback={<RouteLoader />}><CheckoutPage /></Suspense> },
       { path: "/order-confirmation/:reference", element: <Suspense fallback={<RouteLoader />}><OrderConfirmationPage /></Suspense> },
+      { path: "/login", element: <Suspense fallback={<RouteLoader />}><LoginPage /></Suspense> },
+      { path: "/register", element: <Suspense fallback={<RouteLoader />}><RegisterPage /></Suspense> },
+      { path: "/account", element: <ProtectedRoute><Suspense fallback={<RouteLoader />}><AccountPage /></Suspense></ProtectedRoute> },
+      { path: "/account/orders", element: <ProtectedRoute><Suspense fallback={<RouteLoader />}><OrdersPage /></Suspense></ProtectedRoute> },
+      { path: "/account/reviews", element: <ProtectedRoute><Suspense fallback={<RouteLoader />}><MyReviewsPage /></Suspense></ProtectedRoute> },
       { path: "*", element: <NotFoundPage /> }
     ]
   }

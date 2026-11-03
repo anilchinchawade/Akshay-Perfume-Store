@@ -12,6 +12,8 @@ import { addItem } from "@/store/slices/cartSlice";
 import { toggleWishlist } from "@/store/slices/wishlistSlice";
 import { useAppSelector } from "@/store/hooks";
 import { products as catalogue } from "@/features/products/data/products";
+import { ReviewForm } from "@/features/reviews/components/ReviewForm";
+import { reviewService } from "@/features/reviews/services/reviewService";
 
 const money = new Intl.NumberFormat("en-IN", { style: "currency", currency: "INR", maximumFractionDigits: 0 });
 const RECENT_KEY = "scentnsillage-recent-products";
@@ -26,6 +28,7 @@ export function ProductDetailPage() {
   const { data: product, isLoading, isError } = useQuery({ queryKey: ["product", slug], queryFn: () => productService.getProductBySlug(slug) });
   const isSaved = useAppSelector(state => state.wishlist.items.some(item => item.productId === product?.id));
   const { data: related = [] } = useQuery({ queryKey: ["similar-products", product?.id], queryFn: () => product ? productService.getSimilarProducts(product) : Promise.resolve([]), enabled: Boolean(product) });
+  const { data: reviewData } = useQuery({ queryKey:["product-reviews",slug], queryFn:()=>reviewService.forProduct(slug), enabled:Boolean(product) });
 
   useEffect(() => {
     if (!product) return;
@@ -64,6 +67,7 @@ export function ProductDetailPage() {
     </section>
     <section className="border-t border-ink/10 py-16"><FragrancePyramid notes={product.notes}/></section>
     <section className="border-t border-ink/10 py-14"><p className="eyebrow">Know your fragrance</p><h2 className="mt-2 font-display text-3xl">The details</h2><div className="mt-6 grid grid-cols-2 gap-5 sm:grid-cols-4"><Attribute label="Concentration" value={product.concentration}/><Attribute label="Longevity" value={product.longevity}/><Attribute label="Sillage" value={product.sillage}/><Attribute label="Occasion" value={product.occasion.join(", ")}/><Attribute label="Season" value={product.season.join(", ")}/><Attribute label="Gender" value={product.gender}/><Attribute label="Scent family" value={product.scentFamily.join(", ")}/></div></section>
+    <section className="border-t border-ink/10 py-14"><div className="grid gap-8 lg:grid-cols-[1fr_420px]"><div><p className="eyebrow">Customer impressions</p><h2 className="mt-2 font-display text-3xl">Reviews {reviewData?.data.total ? `(${reviewData.data.total})` : ""}</h2>{reviewData?.data.reviews?.length ? <div className="mt-6 space-y-6">{reviewData.data.reviews.map(review=><article key={review.id} className="border-b border-ink/10 pb-5"><p className="text-sm font-semibold">{review.title}</p><p className="mt-2 text-sm leading-6 text-muted">{review.comment}</p><p className="mt-2 text-xs text-muted">{review.rating}/5 · {new Date(review.createdAt).toLocaleDateString("en-IN")}</p></article>)}</div> : <p className="mt-4 text-sm text-muted">Be the first to share your impression of this fragrance.</p>}</div><ReviewForm productId={product.id}/></div></section>
     {related.length > 0 && <section className="border-t border-ink/10 py-16"><p className="eyebrow">You may also love</p><h2 className="mt-2 font-display text-3xl">Similar fragrances</h2><div className="mt-8 grid grid-cols-2 gap-5 md:grid-cols-4">{related.map(item => <ProductCard key={item.id} product={item}/>)}</div></section>}
     {recentSlugs.length > 0 && <section className="border-t border-ink/10 py-16"><p className="eyebrow">A second look</p><h2 className="mt-2 font-display text-3xl">Recently viewed</h2><div className="mt-8 grid grid-cols-2 gap-5 md:grid-cols-4">{catalogue.filter(item => recentSlugs.includes(item.slug)).map(item => <ProductCard key={item.id} product={item}/>)}</div></section>}
     {zoomOpen && <div className="fixed inset-0 z-[80] flex items-center justify-center bg-ink/90 p-5" role="dialog" aria-modal="true" aria-label="Product image zoom" onClick={() => setZoomOpen(false)}><button type="button" className="absolute right-6 top-6 text-sm text-white underline" onClick={() => setZoomOpen(false)}>Close</button><img src={image} alt={product.images[selectedImage]?.alt ?? product.name} className="max-h-[88vh] max-w-full object-contain"/></div>}

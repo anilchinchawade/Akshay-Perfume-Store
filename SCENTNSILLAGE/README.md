@@ -55,3 +55,7 @@ The local catalogue is demonstration data. In Phase 6, replace `frontend/src/fea
 
 ## Phase 4
 See [PHASE-4-README.md](./PHASE-4-README.md) for cart, wishlist, checkout, and Razorpay setup.
+
+
+## Phase 5
+See [PHASE-5-README.md](./PHASE-5-README.md) for authentication, account, order history and review routes.
