@@ -63,7 +63,13 @@ export function CheckoutForm() {
     try {
       const loaded = await loadRazorpay();
       if (!loaded || !window.Razorpay) throw new Error("Razorpay checkout could not be loaded. Check your internet connection.");
-      const order = await paymentService.createOrder({ amount: Math.round(total * 100), currency:"INR", receipt:`sns_${Date.now()}` });
+      const order = await paymentService.createOrder({
+        items: items.map(item => {
+          if (!item.productId) throw new Error(`Cart item "${item.name}" is missing its product reference. Remove it and add it again from the catalogue.`);
+          return { productId:item.productId, variantId:item.id.slice(item.productId.length + 1), quantity:item.quantity };
+        }),
+        shippingAddress: values
+      });
       const razorpay = new window.Razorpay({
         key: order.data.keyId,
         amount: order.data.amount,
@@ -82,8 +88,8 @@ export function CheckoutForm() {
               razorpay_signature:response.razorpay_signature
             });
             if (!verified.data.verified) throw new Error("Payment verification failed.");
-            const reference = `SNS-${Date.now().toString().slice(-8)}`;
-            sessionStorage.setItem("scentnsillage-last-order",JSON.stringify({reference,paymentId:verified.data.paymentId,total,customer:values,items}));
+            const reference = verified.data.orderNumber;
+            sessionStorage.setItem("scentnsillage-last-order",JSON.stringify({reference,paymentId:verified.data.paymentId,total:verified.data.total,customer:values,items}));
             dispatch(clearCart());
             navigate(`/order-confirmation/${reference}`);
           } catch (error) {

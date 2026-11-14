@@ -59,3 +59,7 @@ See [PHASE-4-README.md](./PHASE-4-README.md) for cart, wishlist, checkout, and R
 
 ## Phase 5
 See [PHASE-5-README.md](./PHASE-5-README.md) for authentication, account, order history and review routes.
+
+
+## Phase 6
+See [PHASE-6-README.md](./PHASE-6-README.md) for MongoDB setup, backend APIs, seeding and payment configuration.

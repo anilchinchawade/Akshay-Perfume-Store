@@ -1,10 +1,12 @@
 import { products } from "@/features/products/data/products";
 import type { Product, ProductFilters, ProductPage } from "@/features/products/types/product.types";
+import { productApi } from "@/features/products/services/productApi";
 
 const has = (value: string, search: string) => value.toLocaleLowerCase().includes(search.toLocaleLowerCase());
 
 export const productService = {
   async getProducts(filters: ProductFilters): Promise<ProductPage> {
+    try { return await productApi.list(filters); } catch { /* Use the bundled catalogue when the API is offline. */ }
     let result = [...products];
     if (filters.search.trim()) {
       const term = filters.search.trim();
@@ -35,7 +37,9 @@ export const productService = {
     const page = Math.min(Math.max(1, filters.page), totalPages);
     return { items: result.slice((page - 1) * filters.limit, page * filters.limit), total, page, limit: filters.limit, totalPages };
   },
-  async getProductBySlug(slug: string) { return products.find(product => product.slug === slug); },
+  async getProductBySlug(slug: string) {
+    try { return await productApi.bySlug(slug); } catch { return products.find(product => product.slug === slug); }
+  },
   async getSuggestions(term: string) {
     if (!term.trim()) return [];
     return products.filter(product => [product.name, product.brand, ...product.scentFamily, ...product.notes.top, ...product.notes.middle, ...product.notes.base].some(value => has(value, term))).slice(0, 5);
