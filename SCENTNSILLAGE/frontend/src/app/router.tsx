@@ -18,6 +18,13 @@ const AccountPage = lazy(() => import("@/features/account/pages/AccountPage").th
 const OrdersPage = lazy(() => import("@/features/account/pages/OrdersPage").then(module => ({ default: module.OrdersPage })));
 const MyReviewsPage = lazy(() => import("@/features/reviews/pages/MyReviewsPage").then(module => ({ default: module.MyReviewsPage })));
 import { ProtectedRoute } from "@/features/auth/components/ProtectedRoute";
+import { AdminRoute } from "@/features/admin/components/AdminRoute";
+import { AdminLayout } from "@/features/admin/components/AdminLayout";
+import { AdminDashboardPage } from "@/features/admin/pages/AdminDashboardPage";
+import { AdminProductsPage } from "@/features/admin/pages/AdminProductsPage";
+import { AdminOrdersPage } from "@/features/admin/pages/AdminOrdersPage";
+import { AdminReviewsPage } from "@/features/admin/pages/AdminReviewsPage";
+import { AdminCustomersPage } from "@/features/admin/pages/AdminCustomersPage";
 
 function RouteLoader() {
   return <div className="mx-auto min-h-[50vh] max-w-6xl animate-pulse px-6 py-20"><div className="h-8 w-1/3 bg-beige"/><div className="mt-6 h-64 bg-beige"/></div>;
@@ -42,6 +49,13 @@ export const router = createBrowserRouter([
       { path: "/account", element: <ProtectedRoute><Suspense fallback={<RouteLoader />}><AccountPage /></Suspense></ProtectedRoute> },
       { path: "/account/orders", element: <ProtectedRoute><Suspense fallback={<RouteLoader />}><OrdersPage /></Suspense></ProtectedRoute> },
       { path: "/account/reviews", element: <ProtectedRoute><Suspense fallback={<RouteLoader />}><MyReviewsPage /></Suspense></ProtectedRoute> },
+      { path: "/admin", element: <AdminRoute />, children: [{ element: <AdminLayout />, children: [
+        { index: true, element: <AdminDashboardPage /> },
+        { path: "products", element: <AdminProductsPage /> },
+        { path: "orders", element: <AdminOrdersPage /> },
+        { path: "reviews", element: <AdminReviewsPage /> },
+        { path: "customers", element: <AdminCustomersPage /> }
+      ] }] },
       { path: "*", element: <NotFoundPage /> }
     ]
   }
