@@ -9,7 +9,9 @@ import { Link } from "react-router-dom";
 
 const schema=z.object({rating:z.number().int().min(1).max(5),title:z.string().trim().min(3,"Add a short review title").max(80),comment:z.string().trim().min(20,"Please write at least 20 characters").max(1200)});
 export function ReviewForm({productId}:{productId:string}){
- const user=useAppSelector(s=>s.auth.user);const status=useAppSelector(s=>s.auth.status);const qc=useQueryClient();
+//  const user=useAppSelector(s=>s.auth.user);const status=useAppSelector(s=>s.auth.status);const qc=useQueryClient();
+const status = useAppSelector(s => s.auth.status);
+const qc = useQueryClient();
  const [rating,setRating]=useState(5);const [title,setTitle]=useState("");const [comment,setComment]=useState("");const [message,setMessage]=useState("");
  const mutation=useMutation({mutationFn:()=>{const payload=schema.parse({rating,title,comment});return reviewService.create({productId,...payload});},onSuccess:()=>{setMessage("Thank you. Your review has been submitted for moderation.");setTitle("");setComment("");setRating(5);qc.invalidateQueries({queryKey:["my-reviews"]});}});
  if(status!=="authenticated")return <div className="border border-ink/10 p-5"><p className="text-sm">Sign in to share your experience.</p><Link to="/login" className="mt-2 inline-block text-sm underline">Sign in</Link></div>;

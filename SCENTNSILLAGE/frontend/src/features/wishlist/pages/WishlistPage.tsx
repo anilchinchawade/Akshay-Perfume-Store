@@ -15,7 +15,7 @@ export function WishlistPage() {
     <div className="mt-10 grid grid-cols-2 gap-5 sm:grid-cols-3 lg:grid-cols-4">{items.map(item => <article key={item.productId}>
       <Link to={`/product/${item.slug}`}><img src={item.image} alt={item.name} className="aspect-[4/5] w-full bg-beige object-cover"/><p className="mt-3 text-[10px] uppercase tracking-widest text-muted">{item.brand}</p><h2 className="mt-1 font-display text-lg">{item.name}</h2></Link>
       <p className="mt-2 text-sm font-semibold">{formatMoney(item.price)}</p>
-      <div className="mt-3 flex gap-2"><Button size="sm" onClick={() => dispatch(addItem({id:`${item.productId}-wishlist`,productId:item.productId,slug:item.slug,name:item.name,size:"Selected size",price:item.price,quantity:1,image:item.image}))}>Add to bag</Button><button aria-label={`Remove ${item.name}`} onClick={() => dispatch(removeWishlistItem(item.productId))} className="border border-ink/20 px-3"><Trash2 size={14}/></button></div>
+      <div className="mt-3 flex gap-2"><Button onClick={() => dispatch(addItem({id:`${item.productId}-wishlist`,productId:item.productId,slug:item.slug,name:item.name,size:"Selected size",price:item.price,quantity:1,image:item.image}))}>Add to bag</Button><button aria-label={`Remove ${item.name}`} onClick={() => dispatch(removeWishlistItem(item.productId))} className="border border-ink/20 px-3"><Trash2 size={14}/></button></div>
     </article>)}</div>}
   </div></Container>;
 }

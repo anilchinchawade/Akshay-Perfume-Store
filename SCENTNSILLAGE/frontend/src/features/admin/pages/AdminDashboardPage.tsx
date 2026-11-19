@@ -7,6 +7,16 @@ export function AdminDashboardPage(){
  const query=useQuery({queryKey:["admin","dashboard"],queryFn:adminService.dashboard});
  if(query.isLoading)return <p className="text-stone-500">Loading dashboard…</p>;
  if(query.isError)return <div className="rounded-xl border border-red-200 bg-red-50 p-5 text-red-700">Could not load dashboard: {(query.error as Error).message}<button className="ml-3 underline" onClick={()=>query.refetch()}>Retry</button></div>;
- const d=query.data.data; const cards=[{label:"Active products",value:d.products,icon:Package},{label:"Total orders",value:d.orders,icon:ShoppingBag},{label:"Customers",value:d.customers,icon:Users},{label:"Paid revenue",value:money(d.revenue),icon:IndianRupee},{label:"Pending reviews",value:d.pendingReviews,icon:MessageSquare}];
+//  const d=query.data.data; 
+if (query.isLoading) {
+  return <div className="p-6">Loading dashboard...</div>;
+}
+
+if (query.isError || !query.data) {
+  return <div className="p-6">Unable to load dashboard data. Please try again.</div>;
+}
+
+const d = query.data.data;
+ const cards=[{label:"Active products",value:d.products,icon:Package},{label:"Total orders",value:d.orders,icon:ShoppingBag},{label:"Customers",value:d.customers,icon:Users},{label:"Paid revenue",value:money(d.revenue),icon:IndianRupee},{label:"Pending reviews",value:d.pendingReviews,icon:MessageSquare}];
  return <div><div className="mb-8"><p className="text-xs uppercase tracking-[.2em] text-[#a17b45]">Store control centre</p><h1 className="mt-2 font-serif text-3xl">Dashboard</h1><p className="mt-2 text-sm text-stone-500">A snapshot of your SCENTNSILLAGE store.</p></div><div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">{cards.map(c=><div key={c.label} className="rounded-xl border border-black/5 bg-white p-5 shadow-sm"><div className="flex items-center justify-between text-stone-500"><span className="text-sm">{c.label}</span><c.icon size={19}/></div><p className="mt-5 text-2xl font-semibold">{c.value}</p></div>)}</div><section className="mt-8 rounded-xl border border-black/5 bg-white p-5"><div className="mb-4 flex items-center justify-between"><h2 className="font-serif text-xl">Recent orders</h2><Link to="/admin/orders" className="text-sm text-[#9a7440] underline">View all</Link></div>{d.recentOrders?.length?<div className="overflow-x-auto"><table className="w-full min-w-[600px] text-left text-sm"><thead className="text-xs uppercase text-stone-400"><tr><th className="py-3">Order</th><th>Total</th><th>Status</th><th>Payment</th><th>Date</th></tr></thead><tbody>{d.recentOrders.map(o=><tr key={o._id} className="border-t border-stone-100"><td className="py-3 font-medium">{o.orderNumber}</td><td>{money(o.total)}</td><td className="capitalize">{o.status}</td><td className="capitalize">{o.paymentStatus}</td><td>{new Date(o.createdAt).toLocaleDateString("en-IN")}</td></tr>)}</tbody></table></div>:<p className="py-8 text-center text-sm text-stone-500">No orders have been placed yet.</p>}</section></div>;
 }
