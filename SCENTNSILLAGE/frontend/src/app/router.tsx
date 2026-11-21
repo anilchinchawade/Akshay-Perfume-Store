@@ -22,6 +22,7 @@ import { AdminRoute } from "@/features/admin/components/AdminRoute";
 import { AdminLayout } from "@/features/admin/components/AdminLayout";
 import { AdminDashboardPage } from "@/features/admin/pages/AdminDashboardPage";
 import { AdminProductsPage } from "@/features/admin/pages/AdminProductsPage";
+import { AdminCollectionsPage } from "@/features/admin/pages/AdminCollectionsPage";
 import { AdminOrdersPage } from "@/features/admin/pages/AdminOrdersPage";
 import { AdminReviewsPage } from "@/features/admin/pages/AdminReviewsPage";
 import { AdminCustomersPage } from "@/features/admin/pages/AdminCustomersPage";
@@ -52,6 +53,7 @@ export const router = createBrowserRouter([
       { path: "/admin", element: <AdminRoute />, children: [{ element: <AdminLayout />, children: [
         { index: true, element: <AdminDashboardPage /> },
         { path: "products", element: <AdminProductsPage /> },
+        { path: "collections", element: <AdminCollectionsPage /> },
         { path: "orders", element: <AdminOrdersPage /> },
         { path: "reviews", element: <AdminReviewsPage /> },
         { path: "customers", element: <AdminCustomersPage /> }

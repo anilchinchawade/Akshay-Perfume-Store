@@ -69,3 +69,12 @@ export interface ProductPage {
   limit: number;
   totalPages: number;
 }
+
+
+export interface StorefrontCustomCollection {
+  title: string;
+  slug: string;
+  description: string;
+  bannerImage: string;
+  products: Product[];
+}

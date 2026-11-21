@@ -1,8 +1,9 @@
 import { NavLink, Outlet, Link } from "react-router-dom";
-import { LayoutDashboard, Package, ShoppingCart, Users, MessageSquare, Store } from "lucide-react";
+import { LayoutDashboard, Package, ShoppingCart, Users, MessageSquare, Store, Layers } from "lucide-react";
 const links = [
   { to: "/admin", label: "Overview", icon: LayoutDashboard, end: true },
   { to: "/admin/products", label: "Products", icon: Package },
+  { to: "/admin/collections", label: "Collections", icon: Layers },
   { to: "/admin/orders", label: "Orders", icon: ShoppingCart },
   { to: "/admin/customers", label: "Customers", icon: Users },
   { to: "/admin/reviews", label: "Reviews", icon: MessageSquare }

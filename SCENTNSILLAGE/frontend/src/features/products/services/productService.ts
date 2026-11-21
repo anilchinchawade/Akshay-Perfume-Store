@@ -1,6 +1,6 @@
 import { products } from "@/features/products/data/products";
-import type { Product, ProductFilters, ProductPage } from "@/features/products/types/product.types";
-import { productApi } from "@/features/products/services/productApi";
+import type { Product, ProductFilters, ProductPage, StorefrontCustomCollection } from "@/features/products/types/product.types";
+import { productApi, type ProductCollection } from "@/features/products/services/productApi";
 
 const has = (value: string, search: string) => value.toLocaleLowerCase().includes(search.toLocaleLowerCase());
 
@@ -36,6 +36,26 @@ export const productService = {
     const totalPages = Math.max(1, Math.ceil(total / filters.limit));
     const page = Math.min(Math.max(1, filters.page), totalPages);
     return { items: result.slice((page - 1) * filters.limit, page * filters.limit), total, page, limit: filters.limit, totalPages };
+  },
+  async getCollection(collection: ProductCollection, limit = 8): Promise<Product[]> {
+    try {
+      const page = await productApi.collection(collection, limit);
+      return page.items;
+    } catch {
+      const flag = collection === "new" ? "isNew" : collection === "bestsellers" ? "isBestseller" : collection === "featured" ? "isFeatured" : "isDiscoverySet";
+      return products.filter(product => product[flag]).sort((a, b) => b.popularity - a.popularity).slice(0, limit);
+    }
+  },
+  async getCustomCollections(): Promise<StorefrontCustomCollection[]> {
+    try { return await productApi.customCollections(); } catch { return []; }
+  },
+  async getCategoryCollection(category: string, limit = 8): Promise<Product[]> {
+    try {
+      const page = await productApi.category(category, limit);
+      return page.items;
+    } catch {
+      return products.filter(product => product.category.toLowerCase() === category.toLowerCase()).sort((a, b) => b.popularity - a.popularity).slice(0, limit);
+    }
   },
   async getProductBySlug(slug: string) {
     try { return await productApi.bySlug(slug); } catch { return products.find(product => product.slug === slug); }
